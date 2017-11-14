@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta charset="utf-8">
+		<script type="text/javascript" src="JQuery/jquery-3.2.1.min.js"></script>
+   		<meta name="viewport" content="width=device-width">
+		<title>hundir la flota</title>
+		
+		<style>
+			.casilla {
+				width: 50px;
+				height: 50px;
+				background-color: lightgrey;
+				float: left;
+				border: 2px solid;
+			}
+
+			#contenedor {
+				position: absolute;
+				background-color: lightgrey;
+				top: 100px;
+				left: 100px;
+				width: 380px;
+				height: 325px;
+			}
+
+			.referencia {
+				width: 50px;
+				height: 50px;
+				background-color: lightgreen;
+				float: left;
+				border: 2px solid;
+				text-align: center;
+			}
+
+			.tieneBarco {
+				width: 50px;
+				height: 50px;
+				float: left;
+				border: 2px solid;
+			}
+
+			.tieneAgua {
+				width: 50px;
+				height: 50px;
+				background-color: lightblue;
+				float: left;
+				border: 2px solid;	
+			}
+
+			h3 {
+				position: absolute;
+				color: red;
+				top: 50px;
+				left: 150px;
+			}
+			
+		</style>
+
+		<script>
+		var abc = ["A", "B", "C", "D", "E"]; //array de strings para las casillas de la izquierda
+		var itinerante = 0; //lo usaremos para recorrer los índices del array dentro del bucle (43)
+		var aguaBarco;
+		var contadorBarcos = 0; //6 barcos como máximo
+		var barcosHundidos = 0; //al llegar a 6 se acaba la partida
+
+			$(document).ready(function() {
+				$("#iniciar").on("click", comenzar);
+				$("#reiniciar").off("click", reiniciar);					
+			})
+
+			function comenzar() {
+				itinerante = 0;
+				contadorBarcos = 0; //6 barcos como máximo
+				barcosHundidos = 0; //al llegar a 6 se acaba la partida
+				$("#iniciar").off("click", comenzar);
+
+				for (var i = 0; i <= 41; i++) {
+					var casilla = $("<div></div>").attr("id", "casilla" + i);
+					
+					casilla.on("click", function() { //al hacer click en la casilla se comprueba si tiene barco o no
+						if ($(this).hasClass("tieneBarco")) {
+							$(this).css("background-image", "url(barco.png"); //si es la casilla correcta cambia la imagen al barco
+							$(this).off("click");
+							barcosHundidos++;
+							$("#contadorBarcosHundidos").text("Barcos hundidos: " + barcosHundidos);
+
+							if (barcosHundidos == 6) {
+								var alerta = $("<h3>Has destruído todos los barcos!!!</h3>").attr("id", "alerta");
+								$("#contenedorAlerta").append(alerta);
+								$("#reiniciar").on("click", reiniciar);
+							} //if
+
+						} else {
+							$(this).removeClass("casilla");
+							$(this).addClass("tieneAgua");
+						}// if
+					})
+
+					$("#contenedor").append(casilla);					
+
+					if ((i <= 7) || (i % 7 == 0)) {
+						$("#casilla" + i).addClass("referencia"); //si es la columna de la izquierda, le pinta la clase
+					} else {
+						$("#casilla" + i).addClass("casilla");
+						aguaBarco = parseInt(Math.random()*2); //si el valor es 1 meteremos un barco en la casilla
+						
+						//se colocan barcos aleatoriamente si quedan barcos libres (6 en total)
+						if ((contadorBarcos <= 5) && (aguaBarco == 1)) {
+							$("#casilla" + i).removeClass("casilla");
+							$("#casilla" + i).addClass("tieneBarco");
+							contadorBarcos++;
+						} 
+					}
+
+					if (i < 7) {
+						$("#casilla" + i).text(i); //si es la fila de arriba, añade números
+					} else if ((i > 6) && (i % 7 == 0)) {
+						$("#casilla" + i).text(abc[itinerante++]); //si es la columna de la izquierda añade letrasº
+					}
+				}
+			}
+
+			function reiniciar() { //reseteamos todo
+				$("#reiniciar").off("click", reiniciar);
+				$("#iniciar").on("click", comenzar);
+				$(".tieneBarco").remove();
+				$(".referencia").remove();
+				$(".casilla").remove();
+				$(".tieneAgua").remove();
+				$("#alerta").remove();
+				barcosHundidos = 0;
+				$("#contadorBarcosHundidos").text("Barcos hundidos: " + barcosHundidos);
+			}
+
+		</script>
+
+	</head>
+	
+	<body>
+		<button type="button" id="iniciar">Comenzar</button>
+		<button type="button" id="reiniciar">Reiniciar</button>
+		<p id="contadorBarcosHundidos">Barcos hundidos: 0</p>
+		<div id ="contenedorAlerta"></div>
+		<div id="contenedor"></div>
+	</body>
+</html>
