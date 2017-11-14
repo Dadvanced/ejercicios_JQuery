@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta charset="utf-8">
+		<script type="text/javascript" src="JQuery/jquery-3.2.1.min.js"></script>
+   		<meta name="viewport" content="width=device-width">
+		<title>come cocos</title>
+		
+		<style>
+			#contenedor {
+				width: 650px;
+				height: 600px;
+				background-color: black;
+			}
+
+			.pacmanClass {
+				position: absolute;
+				top: 5px;
+				left: 5px;
+				width: 50px;
+				height: 50px;
+				border-radius: 50px;
+				background-image: url("pacman.png");
+				background-repeat: no-repeat;
+			}
+
+			.fantasmaClass {
+				position: absolute;
+				top: 250px;
+				left: 270px;
+				width: 50px;
+				height: 50px;
+				background-image: url("ghost.png");
+				background-repeat: no-repeat;
+			}
+		</style>
+
+		<script>
+			$(document).ready(function() {
+
+				var comeCoco = $("<div></div>").attr("id", "pacman").addClass("pacmanClass");
+				$("#contenedor").append(comeCoco);
+
+				var fantasma =$("<div></div>").attr("id", "fantasma").addClass("fantasmaClass");
+				$("#contenedor").append(fantasma);
+
+				perseguir(); //inicia el fantasma la persecución
+
+				$("#pacman").on("click", huir); //al hacer click en pacman, huye
+
+				
+			});
+
+			var tiempo = 5000; //será el tiempo que tarda el fantasma en llegar a pacman
+			var huidas = 0;
+			function perseguir() {
+					var positionPacman = $("#pacman").position();
+					$("#fantasma").animate({left: positionPacman.left, top: positionPacman.top}, tiempo, 
+						function(){alert("pillado!!!")});
+				}
+
+
+			function huir() {
+				huidas++;
+				$("#fantasma").stop(); //paramos la animación del fantasma para que nos siga de nuevo
+				var pacmanTop = parseInt(Math.random()*600);
+				var pacmanLeft = parseInt(Math.random()*650);
+
+				//pacman huirá a una posición aleatoria
+				$("#pacman").animate({left: pacmanLeft, top: pacmanTop}, 1000);
+				$("#clicks").text("Veces huidas: " + huidas);
+
+				//cuando termine de huir llama de nuevo a la función
+				tiempo -= 500;
+				$("#fantasma").animate({left: pacmanLeft, top: pacmanTop}, tiempo,function(){alert("pillado!!")});
+			}
+		</script>
+
+	</head>
+	
+	<body>
+	<div id="contenedor"></div>	
+	<h1 id="clicks">Veces huidas: </h1>
+	</body>
+</html>

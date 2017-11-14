@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta charset="utf-8">
+		<script type="text/javascript" src="JQuery/jquery-3.2.1.min.js"></script>
+   		<meta name="viewport" content="width=device-width">
+		<title>come cocos</title>
+		
+		<style>
+			#contenedor {
+				width: 650px;
+				height: 600px;
+				background-color: black;
+			}
+
+			.pacmanClass {
+				position: absolute;
+				top: 5px;
+				left: 5px;
+				width: 50px;
+				height: 50px;
+				border-radius: 50px;
+				background-image: url("pacman.png");
+				background-repeat: no-repeat;
+			}
+
+			.fantasmaClass {
+				position: absolute;
+				top: 250px;
+				left: 270px;
+				width: 50px;
+				height: 50px;
+				background-image: url("ghost.png");
+				background-repeat: no-repeat;
+			}
+		</style>
+
+		<script>
+			var tiempo = 5000; //será el tiempo que tarda el fantasma en llegar a pacman
+			$(document).ready(function() {
+
+				var comeCoco = $("<div></div>").attr("id", "pacman").addClass("pacmanClass");
+				$("#contenedor").append(comeCoco);
+
+				var fantasma =$("<div></div>").attr("id", "fantasma").addClass("fantasmaClass");
+				$("#contenedor").append(fantasma);				
+
+				
+			  $(document).on("mousemove", function(event) {
+				$("#pacman").css({left: event.pageX, top: event.pageY});
+				$("#fantasma").stop(); //paramos la animación del fantasma para que nos siga de nuevo
+				tiempo-=10 //cada vez que se para el ratón, la velocidad del fantasma aumenta
+				perseguir(); //inicia el fantasma la persecución
+			  });
+				
+			});
+
+			
+			function perseguir() {
+					var positionPacman = $("#pacman").position();
+					$("#fantasma").animate({left: positionPacman.left, top: positionPacman.top}, tiempo, 
+						function(){alert("pillado!!!")});
+				}
+		</script>
+
+	</head>
+	
+	<body>
+	<div id="contenedor"></div>	
+	</body>
+</html>
